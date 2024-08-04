@@ -10,15 +10,61 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import { handleGoogleAuth } from "@/lib/auth";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { BiSolidRightArrow } from "react-icons/bi";
-import { BsGoogle } from "react-icons/bs";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function SigIn() {
+  const { toast } = useToast();
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleGoogleSignIn = () => {
     const result = handleGoogleAuth();
+  };
+
+  const handleSignIn = async () => {
+    setLoading(true);
+    try {
+      const responce = await axios.post(
+        "http://localhost:3000/api/signin",
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
+
+      if (responce.status === 201) {
+        toast({
+          title: "Sign in successful",
+          description: "Welcome back! to SaveToDrive",
+          variant: "success",
+        });
+
+        router.push("/dashboard");
+      }
+
+      if (responce.status === 200)
+        toast({
+          title: responce.data,
+        });
+
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,10 +97,26 @@ export default function SigIn() {
             </Button>
             <Separator />
             <div className="my-10 flex flex-col gap-4">
-              <Input type="email" placeholder="Email" />
-              <Input type="password" placeholder="Password" />
+              <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="Email"
+              />
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                placeholder="Password"
+              />
             </div>
-            <Button className="w-full">SIGN IN</Button>
+            <Button onClick={handleSignIn} className="w-full">
+              {loading ? (
+                <AiOutlineLoading3Quarters className="animate-spin h-5 w-5" />
+              ) : (
+                "SIGN IN"
+              )}
+            </Button>
           </div>
         </CardContent>
         <CardFooter>
