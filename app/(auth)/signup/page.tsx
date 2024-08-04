@@ -11,15 +11,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { handleGoogleAuth } from "@/lib/auth";
+import { handleImageUpload } from "@/lib/storage";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { FaImage } from "react-icons/fa6";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function SigUp() {
   const imageRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [fileuploadLoading, setFileuploadLoading] = useState(false);
 
   const handleGoogleSignUp = async () => {
     const result = await handleGoogleAuth();
@@ -29,16 +32,31 @@ export default function SigUp() {
     imageRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
         alert("Please select a valid image file.");
         return;
       }
+
+      setFileuploadLoading(true);
+      const result = await handleImageUpload(file);
+      // console.log(result);
+      // alert(result);
+
+      if (result.success) {
+        setImagePreview(result.downloadUrl as string);
+        setFileuploadLoading(false);
+      } else {
+        alert("Something went wrong");
+        setFileuploadLoading(false);
+      }
       // Create a preview URL
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
+      // const previewUrl = URL.createObjectURL(file);
+      // setImagePreview(previewUrl);
     }
   };
 
@@ -80,7 +98,14 @@ export default function SigUp() {
                 className="hidden"
                 onChange={handleFileChange}
               />
-              {imagePreview ? (
+              {fileuploadLoading ? (
+                <div className="flex flex-col items-center justify-center">
+                  <AiOutlineLoading3Quarters className="self-center h-[80px] w-[80px] m-6 animate-spin " />
+                  <p className="text-gray-500 text-[14px] font-semibold">
+                    Please wait a moment
+                  </p>
+                </div>
+              ) : imagePreview ? (
                 <div className="flex items-center justify-center">
                   <Image
                     src={imagePreview}
