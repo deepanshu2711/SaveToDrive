@@ -35,6 +35,43 @@ export default function SigUp() {
 
   const handleGoogleSignUp = async () => {
     const result = await handleGoogleAuth();
+
+    if (result.success) {
+      try {
+        const responce = await axios.post(
+          "http://localhost:3000/api/google",
+          {
+            email: result.user?.email,
+            fullName: result.user?.displayName,
+            imageUrl: result.user?.photoURL,
+          },
+          { withCredentials: true }
+        );
+
+        if (responce.status === 201) {
+          toast({
+            title: "Sign in successful",
+            description: "Welcome back! to SaveToDrive",
+            variant: "success",
+          });
+          router.push("/dashboard");
+        } else if (responce.status === 200) {
+          toast({
+            title: responce.data,
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Something went wrong",
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: result.errorMessage,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleClick = () => {

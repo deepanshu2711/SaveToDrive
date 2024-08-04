@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
     const { email, password } = await request.json();
-    console.log(email, password)
     if (!email || !password) {
         return new NextResponse("Missing information", { status: 200 });
     }

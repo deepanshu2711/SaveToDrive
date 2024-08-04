@@ -9,9 +9,7 @@ export async function middleware(request: NextRequest) {
 
     try {
         const responce = await axios.post('http://localhost:3000/api/verify', { token }, { withCredentials: true });
-        console.log(responce.data)
         const { success } = responce.data;
-        console.log(success)
         if (!success) {
             return NextResponse.redirect(new URL('/signin', request.url));
         }
