@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-        const responce = await axios.post('http://localhost:3000/api/verify', { token }, { withCredentials: true });
+        const responce = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/verify`, { token }, { withCredentials: true });
         const { success } = responce.data;
         if (!success) {
             return NextResponse.redirect(new URL('/signin', request.url));
