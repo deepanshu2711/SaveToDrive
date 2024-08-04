@@ -32,7 +32,7 @@ export default function SigIn() {
     if (result.success) {
       try {
         const responce = await axios.post(
-          "http://localhost:3000/api/google",
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/google`,
           {
             email: result.user?.email,
             fullName: result.user?.displayName,
@@ -71,7 +71,7 @@ export default function SigIn() {
     setLoading(true);
     try {
       const responce = await axios.post(
-        "http://localhost:3000/api/signin",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/signin`,
         {
           email,
           password,

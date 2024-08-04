@@ -39,7 +39,7 @@ export default function SigUp() {
     if (result.success) {
       try {
         const responce = await axios.post(
-          "http://localhost:3000/api/google",
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/google`,
           {
             email: result.user?.email,
             fullName: result.user?.displayName,
@@ -110,7 +110,7 @@ export default function SigUp() {
     setLoading(true);
     try {
       const responce = await axios.post(
-        "http://localhost:3000/api/signup",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/signup`,
         {
           email,
           password,
