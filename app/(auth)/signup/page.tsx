@@ -18,11 +18,20 @@ import { useRef, useState } from "react";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { FaImage } from "react-icons/fa6";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import axios from "axios";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function SigUp() {
+  const { toast } = useToast();
+  const router = useRouter();
   const imageRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [fileuploadLoading, setFileuploadLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
 
   const handleGoogleSignUp = async () => {
     const result = await handleGoogleAuth();
@@ -38,25 +47,64 @@ export default function SigUp() {
     const file = event.target.files?.[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        alert("Please select a valid image file.");
+        toast({
+          title: "Please select a valid image file.",
+          variant: "default",
+        });
         return;
       }
-
       setFileuploadLoading(true);
       const result = await handleImageUpload(file);
-      // console.log(result);
-      // alert(result);
-
       if (result.success) {
         setImagePreview(result.downloadUrl as string);
         setFileuploadLoading(false);
       } else {
-        alert("Something went wrong");
+        toast({
+          title: "Something went wrong",
+          description: "Please try again",
+          variant: "destructive",
+        });
         setFileuploadLoading(false);
       }
-      // Create a preview URL
-      // const previewUrl = URL.createObjectURL(file);
-      // setImagePreview(previewUrl);
+    }
+  };
+
+  const handleSignUp = async () => {
+    setLoading(true);
+    try {
+      const responce = await axios.post(
+        "http://localhost:3000/api/signup",
+        {
+          email,
+          password,
+          fullName,
+          imageUrl: imagePreview,
+        },
+        { withCredentials: true }
+      );
+
+      if (responce.status === 201) {
+        toast({
+          title: "Account created",
+          description: "We've created your account for you.",
+          variant: "success",
+        });
+
+        router.push("/dashboard");
+      }
+
+      if (responce.status === 200)
+        toast({
+          title: responce.data,
+        });
+
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        variant: "destructive",
+      });
+      setLoading(false);
     }
   };
 
@@ -127,11 +175,32 @@ export default function SigUp() {
                 </div>
               )}
 
-              <Input type="email" placeholder="Email" />
-              <Input type="text" placeholder="Name" />
-              <Input type="password" placeholder="Password" />
+              <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="Email"
+              />
+              <Input
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                type="text"
+                placeholder="Full Name"
+              />
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                placeholder="Password"
+              />
             </div>
-            <Button className="w-full">SIGN UP</Button>
+            <Button onClick={handleSignUp} className="w-full">
+              {loading ? (
+                <AiOutlineLoading3Quarters className="h-5 w-5 animate-spin" />
+              ) : (
+                "Sign Up"
+              )}
+            </Button>
           </div>
         </CardContent>
         <CardFooter>

@@ -18,4 +18,5 @@ model User {
   email    String @unique
   fullName String
   imageUrl String
+  password String
 }
