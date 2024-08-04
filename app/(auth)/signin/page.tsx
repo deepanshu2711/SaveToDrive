@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,12 +10,17 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { handleGoogleAuth } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { BsGoogle } from "react-icons/bs";
 
 export default function SigIn() {
+  const handleGoogleSignIn = () => {
+    const result = handleGoogleAuth();
+  };
+
   return (
     <div>
       <Card className="shadow-2xl">
@@ -25,6 +31,7 @@ export default function SigIn() {
         <CardContent>
           <div className="md:min-w-[400px] w-full">
             <Button
+              onClick={handleGoogleSignIn}
               variant={"outline"}
               className="w-full flex mb-10 font-semibold items-center justify-around"
             >
@@ -53,7 +60,10 @@ export default function SigIn() {
         <CardFooter>
           <div className="flex items-center gap-2">
             <p className="text-[14px] text-gray-400">No account?</p>
-            <Link href={"/signup"} className="text-[14px] font-bold">
+            <Link
+              href={"/signup"}
+              className="text-[14px] hover:underline font-bold"
+            >
               Sign Up
             </Link>
           </div>

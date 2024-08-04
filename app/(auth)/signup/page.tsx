@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { handleGoogleAuth } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
@@ -19,6 +20,11 @@ import { FaImage } from "react-icons/fa6";
 export default function SigUp() {
   const imageRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleGoogleSignUp = async () => {
+    const result = await handleGoogleAuth();
+  };
+
   const handleClick = () => {
     imageRef.current?.click();
   };
@@ -46,6 +52,7 @@ export default function SigUp() {
         <CardContent>
           <div className="md:min-w-[400px] w-full">
             <Button
+              onClick={handleGoogleSignUp}
               variant={"outline"}
               className="w-full flex mb-8 font-semibold items-center justify-around"
             >
