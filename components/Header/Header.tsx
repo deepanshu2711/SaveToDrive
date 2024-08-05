@@ -12,7 +12,7 @@ import { IoMdMenu } from "react-icons/io";
 
 export const Header = () => {
   return (
-    <div className="flex items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
+    <div className="flex fixed top-0 left-0 right-0 bg-white items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
       <IoMdMenu className="md:hidden h-8 w-8" />
       <div className=" items-center gap-2 flex">
         <Image src="/logo.png" alt="logo" width={60} height={60} />

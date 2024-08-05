@@ -5,11 +5,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Header />
-      <div className="flex mt-5 md:mt-10">
-        <div className="w-1/6 hidden md:block">
+      <div className="flex mt-24 md:mt-36">
+        <div className="w-1/6 fixed hidden md:block ">
           <SideBar />
         </div>
-        {children}
+        <div className="md:w-5/6 md:ml-[15%] w-full ">{children}</div>
       </div>
     </div>
   );
