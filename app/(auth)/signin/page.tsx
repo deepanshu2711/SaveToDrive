@@ -135,7 +135,7 @@ export default function SigIn() {
               </span>
               Continue with google{" "}
               <span>
-                <BiSolidRightArrow className="h-5 w-5" />
+                <BiSolidRightArrow className="h-2.5 w-2.5" />
               </span>
             </Button>
             <Separator />

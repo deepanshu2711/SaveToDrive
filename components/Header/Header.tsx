@@ -12,6 +12,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { IoMdMenu } from "react-icons/io";
 import { useAppSelector } from "@/redux/hook";
 import { User } from "@/types";
+import { MdOutlineLogout } from "react-icons/md";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import axios from "axios";
 
 export const Header = () => {
   const currentUser: User = useAppSelector(
@@ -22,10 +32,22 @@ export const Header = () => {
     return null;
   }
 
-  console.log(currentUser);
+  const handleLogout = async () => {
+    try {
+      const responce = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/logout`,
+        { withCredentials: true }
+      );
+      if (responce.status === 200) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <div className="flex fixed top-0 left-0 right-0 bg-white items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
+    <div className="flex sticky top-0 z-50 bg-white items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
       <IoMdMenu className="md:hidden h-8 w-8" />
       <div className=" items-center gap-2 flex">
         <Image src="/logo.png" alt="logo" width={60} height={60} />
@@ -47,10 +69,25 @@ export const Header = () => {
             </SelectContent>
           </Select>
         </div>
-        <Avatar>
-          <AvatarImage src={currentUser?.imageUrl as string} />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Avatar>
+              <AvatarImage src={currentUser?.imageUrl as string} />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} variant="destructive">
+              <div className="flex items-center justify-around w-full ">
+                <MdOutlineLogout className="h-5 w-5" />
+                <span className="ml-2">Logout</span>
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

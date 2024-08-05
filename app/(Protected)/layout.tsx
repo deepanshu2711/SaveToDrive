@@ -5,7 +5,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Header />
-      <div className="flex mt-24 md:mt-36">
+      <div className="flex mt-5 md:mt-10">
         <div className="w-1/6 fixed hidden md:block ">
           <SideBar />
         </div>

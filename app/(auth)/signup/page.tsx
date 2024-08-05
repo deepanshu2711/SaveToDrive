@@ -174,7 +174,7 @@ export default function SigUp() {
               </span>
               Continue with google{" "}
               <span>
-                <BiSolidRightArrow className="h-5 w-5" />
+                <BiSolidRightArrow className="h-2.5 w-2.5" />
               </span>
             </Button>
             <Separator />
@@ -207,9 +207,9 @@ export default function SigUp() {
               ) : (
                 <div
                   onClick={handleClick}
-                  className="h-32 border cursor-pointer flex flex-col items-center justify-center"
+                  className="h-32 group border cursor-pointer flex flex-col items-center justify-center"
                 >
-                  <FaImage className="h-20 w-20" />
+                  <FaImage className="h-20 w-20 text-gray-700 group-hover:text-gray-900" />
                   <p className="text-[14px] text-gray-600 font-medium">
                     Select profile image
                   </p>
@@ -247,7 +247,10 @@ export default function SigUp() {
         <CardFooter>
           <div className="flex items-center gap-2">
             <p className="text-[14px] text-gray-400">Have account?</p>
-            <Link href={"/signin"} className="text-[14px] font-bold">
+            <Link
+              href={"/signin"}
+              className="text-[14px] font-bold hover:underline"
+            >
               Sign In
             </Link>
           </div>
