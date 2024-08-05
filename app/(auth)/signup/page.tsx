@@ -21,6 +21,8 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/hook";
+import { setCurrentUser } from "@/redux/reducers/userReducer";
 
 export default function SigUp() {
   const { toast } = useToast();
@@ -32,6 +34,7 @@ export default function SigUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const dispatch = useAppDispatch();
 
   const handleGoogleSignUp = async () => {
     const result = await handleGoogleAuth();
@@ -54,6 +57,7 @@ export default function SigUp() {
             description: "Welcome back! to SaveToDrive",
             variant: "success",
           });
+          dispatch(setCurrentUser(responce.data));
           router.push("/dashboard");
         } else if (responce.status === 200) {
           toast({
@@ -126,7 +130,7 @@ export default function SigUp() {
           description: "We've created your account for you.",
           variant: "success",
         });
-
+        dispatch(setCurrentUser(responce.data));
         router.push("/dashboard");
       }
 

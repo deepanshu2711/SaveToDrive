@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,8 +10,20 @@ import {
 } from "../ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { IoMdMenu } from "react-icons/io";
+import { useAppSelector } from "@/redux/hook";
+import { User } from "@/types";
 
 export const Header = () => {
+  const currentUser: User = useAppSelector(
+    (state: any) => state.user.currentUser
+  );
+
+  if (!currentUser) {
+    return null;
+  }
+
+  console.log(currentUser);
+
   return (
     <div className="flex fixed top-0 left-0 right-0 bg-white items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
       <IoMdMenu className="md:hidden h-8 w-8" />
@@ -35,7 +48,7 @@ export const Header = () => {
           </Select>
         </div>
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src={currentUser?.imageUrl as string} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </div>

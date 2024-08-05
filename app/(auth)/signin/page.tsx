@@ -19,6 +19,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useAppDispatch } from "@/redux/hook";
+import { setCurrentUser } from "@/redux/reducers/userReducer";
 
 export default function SigIn() {
   const { toast } = useToast();
@@ -26,6 +28,7 @@ export default function SigIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
   const handleGoogleSignIn = async () => {
     const result = await handleGoogleAuth();
 
@@ -47,6 +50,7 @@ export default function SigIn() {
             description: "Welcome back! to SaveToDrive",
             variant: "success",
           });
+          dispatch(setCurrentUser(responce.data));
           router.push("/dashboard");
         } else if (responce.status === 200) {
           toast({
@@ -85,6 +89,8 @@ export default function SigIn() {
           description: "Welcome back! to SaveToDrive",
           variant: "success",
         });
+
+        dispatch(setCurrentUser(responce.data));
 
         router.push("/dashboard");
       }
