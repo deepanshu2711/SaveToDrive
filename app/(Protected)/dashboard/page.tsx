@@ -1,7 +1,9 @@
+import Dashboard from "@/components/Dashboard/dashboard";
+
 const DashBoard = () => {
   return (
-    <div>
-      <p>Dashboard</p>
+    <div className="w-full">
+      <Dashboard />
     </div>
   );
 };
