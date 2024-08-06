@@ -17,15 +17,18 @@ import { User } from "@/types";
 import { Skeleton } from "../ui/skeleton";
 import axios from "axios";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useToast } from "../ui/use-toast";
 
 interface DashBoardHeaderProps {
   user: User | null;
 }
 
 const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
+  const { toast } = useToast();
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [mounted, setMounted] = useState(false);
 
@@ -53,10 +56,10 @@ const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
   const handleUpload = async () => {
     setUploading(true);
     await handleImageUpload(file as File)
-      .then((res) => {
+      .then(async (res) => {
         if (res.success) {
           try {
-            const responce = axios.post(
+            const responce = await axios.post(
               `${process.env.NEXT_PUBLIC_BASE_URL}/api/upload`,
               {
                 userId: user?.id,
@@ -66,12 +69,30 @@ const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
               },
               { withCredentials: true }
             );
-          } catch (error) {}
+
+            if (responce.status === 201) {
+              toast({
+                title: "File uploaded successfully",
+                variant: "success",
+              });
+            } else if (responce.status === 200) {
+              toast({
+                title: responce.data,
+                variant: "default",
+              });
+            }
+          } catch (error) {
+            toast({
+              title: "Something went wrong",
+              variant: "destructive",
+            });
+          }
         }
       })
       .finally(() => {
         setTitle("");
         setFile(null);
+        setIsOpen(false);
         setUploading(false);
       });
   };
@@ -106,9 +127,9 @@ const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
             <p className="ml-2">Search</p>
           </Button>
         </div>
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
           <div>
-            <DialogTrigger>
+            <DialogTrigger onClick={() => setIsOpen(true)}>
               <div className="w-full  bg-gray-950 text-white px-5 py-2 rounded-md hover:bg-gray-800">
                 Upload file
               </div>

@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header/Header";
 import SideBar from "@/components/SIdebar/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -11,6 +12,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <div className="md:w-5/6 md:ml-[15%] w-full ">{children}</div>
       </div>
+      <Toaster />
     </div>
   );
 };
