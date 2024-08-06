@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { PiRowsThin } from "react-icons/pi";
 import { PiGridFourThin } from "react-icons/pi";
@@ -13,6 +13,14 @@ import {
 
 const DashboardFilter = () => {
   const [selectedTab, setSelectedTab] = useState("Grid");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   const handleValueChange = () => {
     if (selectedTab === "Grid") {
       setSelectedTab("Table");
@@ -20,6 +28,7 @@ const DashboardFilter = () => {
       setSelectedTab("Grid");
     }
   };
+
   return (
     <div className="flex items-center justify-between mt-4">
       <div>
