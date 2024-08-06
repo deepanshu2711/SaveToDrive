@@ -22,9 +22,21 @@ model User {
   files    File[]
 }
 
+// enum FileFormats {
+//   pdf
+//   docx
+//   csv
+//   doc
+//   jpg
+//   png
+//   jpeg
+// }
+
 model File {
   id      String @id @unique @default(uuid())
   fileUrl String
+  title   String
   userId  String
+  type    String
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -15,6 +15,8 @@ import { useEffect, useState } from "react";
 import { handleImageUpload } from "@/lib/storage";
 import { User } from "@/types";
 import { Skeleton } from "../ui/skeleton";
+import axios from "axios";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface DashBoardHeaderProps {
   user: User | null;
@@ -23,6 +25,7 @@ interface DashBoardHeaderProps {
 const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const [mounted, setMounted] = useState(false);
 
@@ -34,8 +37,7 @@ const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
 
   const handleFilechange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    const allowedExtensions =
-      /(\.pdf|\.csv|\.doc|\.docx|\.jpg|\.jpeg|\.png|\.gif)$/i;
+    const allowedExtensions = /(\.pdf|\.csv|\.doc|\.docx|\.jpg|\.jpeg|\.png)$/i;
 
     if ((file?.size as number) > 1048576) {
       alert("File size cannot exceed 1 MB.");
@@ -49,10 +51,29 @@ const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
   };
 
   const handleUpload = async () => {
-    const result = await handleImageUpload(file as File);
-    if (result.success) {
-      console.log(result.downloadUrl);
-    }
+    setUploading(true);
+    await handleImageUpload(file as File)
+      .then((res) => {
+        if (res.success) {
+          try {
+            const responce = axios.post(
+              `${process.env.NEXT_PUBLIC_BASE_URL}/api/upload`,
+              {
+                userId: user?.id,
+                title: title,
+                fileUrl: res.downloadUrl,
+                type: file?.type.split("/")[1],
+              },
+              { withCredentials: true }
+            );
+          } catch (error) {}
+        }
+      })
+      .finally(() => {
+        setTitle("");
+        setFile(null);
+        setUploading(false);
+      });
   };
 
   if (!user || !mounted) {
@@ -115,7 +136,11 @@ const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
             </div>
             <DialogFooter>
               <Button onClick={handleUpload} type="submit">
-                Upload
+                {uploading ? (
+                  <AiOutlineLoading3Quarters className="animate-spin h-5 w-5" />
+                ) : (
+                  "Upload"
+                )}
               </Button>
             </DialogFooter>
           </DialogContent>
