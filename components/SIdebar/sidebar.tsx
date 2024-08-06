@@ -14,7 +14,7 @@ const SideBar = () => {
         <div className="flex items-center gap-2 group hover:text-blue-500 cursor-pointer">
           <CiStar className="h-8 w-8 " />
           <p className="text-[14px] font-semibold text-gray-700 group-hover:text-blue-500">
-            Favourites
+            Favorites
           </p>
         </div>
         <div className="flex items-center gap-2 group hover:text-blue-500 cursor-pointer">

@@ -7,6 +7,15 @@ import { CiFileOn } from "react-icons/ci";
 import { BsFiletypeDocx } from "react-icons/bs";
 import { BsFiletypePdf } from "react-icons/bs";
 import { BsFiletypeCsv } from "react-icons/bs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { CiTrash } from "react-icons/ci";
+import { CiStar } from "react-icons/ci";
+import Link from "next/link";
 
 interface FileCardProps {
   file: File & {
@@ -29,7 +38,37 @@ const FileCard = ({ file }: FileCardProps) => {
               {file.title}
             </p>
           </div>
-          <IoEllipsisVerticalSharp className="h-5 w-5" />
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <IoEllipsisVerticalSharp className="h-5 w-5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="md:w-[150px]">
+              <DropdownMenuItem>
+                <Link
+                  href={file.fileUrl as string}
+                  className="flex group items-center gap-5"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download={file.title}
+                >
+                  <CiFileOn className="h-6 w-6 group-hover:text-blue-500" />
+                  <p className="group-hover:text-blue-500">Download</p>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <div className="flex group items-center gap-5 ">
+                  <CiStar className="h-6 w-6 group-hover:text-blue-500" />
+                  <p className="group-hover:text-blue-500">Favorite</p>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <div className="flex group items-center gap-5 ">
+                  <CiTrash className="h-6 w-6 group-hover:text-rose-500" />
+                  <p className="group-hover:text-rose-500">Delete</p>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardHeader>
       <CardContent>
