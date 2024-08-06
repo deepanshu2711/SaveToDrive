@@ -19,4 +19,12 @@ model User {
   fullName String
   imageUrl String
   password String
+  files    File[]
+}
+
+model File {
+  id      String @id @unique @default(uuid())
+  fileUrl String
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
