@@ -22,15 +22,19 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 export const Header = () => {
+  const [mounted, setMounted] = useState(false);
+
   const currentUser: User = useAppSelector(
     (state: any) => state.user.currentUser
   );
 
-  if (!currentUser) {
-    return null;
-  }
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     try {
