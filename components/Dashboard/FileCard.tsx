@@ -72,6 +72,23 @@ const FileCard = ({ file }: FileCardProps) => {
     }
   };
 
+  const handleFileDelete = async (fileId: string) => {
+    try {
+      const response = await axios.delete(`/api/files?fileId=${fileId}`);
+      if (response.status === 200) {
+        toast({
+          title: "File deleted",
+          description: "File deleted successfully",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -127,7 +144,10 @@ const FileCard = ({ file }: FileCardProps) => {
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <div className="flex group items-center gap-5 ">
+                  <div
+                    onClick={() => handleFileDelete(file.id as string)}
+                    className="flex group items-center gap-5 "
+                  >
                     <CiTrash className="h-6 w-6 group-hover:text-rose-500" />
                     <p className="group-hover:text-rose-500">Delete</p>
                   </div>
