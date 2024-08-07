@@ -50,7 +50,7 @@ const DashboardFilter = () => {
         </Tabs>
       </div>
       <div className="flex items-center gap-4">
-        <p className="text-[14px] font-semibold text-gray-700 hidden md:block">
+        <p className="text-[14px] font-semibold  hidden md:block">
           Type Filter
         </p>
         <Select>

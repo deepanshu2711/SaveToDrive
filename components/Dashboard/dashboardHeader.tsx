@@ -117,7 +117,7 @@ const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
         </Button>
       </div>
       <div className="flex items-center justify-between w-full">
-        <p className="md:text-5xl hidden md:block text-3xl font-bold text-gray-900">
+        <p className="md:text-5xl hidden md:block text-3xl font-bold ">
           Your Files
         </p>
         <div className="md:flex hidden gap-2 items-center">
@@ -130,7 +130,7 @@ const DashboardHeader = ({ user }: DashBoardHeaderProps) => {
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
           <div>
             <DialogTrigger onClick={() => setIsOpen(true)}>
-              <div className="w-full  bg-gray-950 text-white px-5 py-2 rounded-md hover:bg-gray-800">
+              <div className="w-full  bg-gray-950 dark:bg-white hover:dark:bg-gray-100 dark:text-black text-white px-5 py-2 rounded-md hover:bg-gray-800">
                 Upload file
               </div>
             </DialogTrigger>

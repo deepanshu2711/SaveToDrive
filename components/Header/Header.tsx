@@ -23,10 +23,12 @@ import {
 } from "../ui/dropdown-menu";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Skeleton } from "../ui/skeleton";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 export const Header = () => {
   const [mounted, setMounted] = useState(false);
+  const { setTheme } = useTheme();
 
   const currentUser: User = useAppSelector(
     (state: any) => state.user.currentUser
@@ -51,16 +53,36 @@ export const Header = () => {
   };
 
   return (
-    <div className="flex sticky top-0 z-50 bg-white items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
+    <div className="flex sticky top-0 z-50 backdrop-blur-md   items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
       <IoMdMenu className="md:hidden h-8 w-8" />
       <div className=" items-center gap-2 flex">
         <Image src="/logo.png" alt="logo" width={60} height={60} />
-        <h1 className="text-xl font-semibold text-gray-800">SaveToDrive</h1>
+        <h1 className="text-xl font-semibold ">SaveToDrive</h1>
       </div>
       <Button className="hidden md:block" variant={"outline"}>
         Your Files
       </Button>
-      <div className="flex items-center gap-10">
+      <div className="flex items-center gap-5">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setTheme("light")}>
+              Light
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("dark")}>
+              Dark
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("system")}>
+              System
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <div className="hidden md:block">
           <Select>
             <SelectTrigger className="w-[180px]">
@@ -82,9 +104,7 @@ export const Header = () => {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} variant="destructive">
+            <DropdownMenuItem onClick={handleLogout}>
               <div className="flex items-center justify-around w-full ">
                 <MdOutlineLogout className="h-5 w-5" />
                 <span className="ml-2">Logout</span>
