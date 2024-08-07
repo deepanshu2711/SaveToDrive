@@ -36,8 +36,13 @@ model File {
   id         String  @id @unique @default(uuid())
   fileUrl    String
   title      String
-  userId     String
   type       String
   isFavorite Boolean @default(false)
-  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isDeleted  Boolean @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
