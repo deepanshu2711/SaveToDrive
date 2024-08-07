@@ -18,6 +18,7 @@ type FileWithUser = File & {
 const DashboardContent = ({ user }: DashBoardContentProps) => {
   const [mounted, setmounted] = useState(false);
   const [allFiles, setAllFiles] = useState<FileWithUser[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setmounted(true);
@@ -25,6 +26,7 @@ const DashboardContent = ({ user }: DashBoardContentProps) => {
 
   useEffect(() => {
     const fetchAllUserFiles = async () => {
+      setLoading(true);
       try {
         const responce = await axios.get(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/files?userId=${user?.id}`
@@ -32,15 +34,17 @@ const DashboardContent = ({ user }: DashBoardContentProps) => {
         if (responce.status === 200) {
           setAllFiles(responce.data);
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
     fetchAllUserFiles();
   }, [user]);
 
   // if (!mounted) return null;
-  if (!user || !mounted) {
+  if (!user || !mounted || loading) {
     return (
       <div className="flex flex-col gap-10 mt-5">
         <div className="w-full flex items-center justify-between">

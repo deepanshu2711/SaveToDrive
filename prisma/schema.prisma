@@ -23,7 +23,7 @@ model User {
 }
 
 // enum FileFormats {
-//   pdf
+//   pdfK
 //   docx
 //   csv
 //   doc
@@ -33,10 +33,11 @@ model User {
 // }
 
 model File {
-  id      String @id @unique @default(uuid())
-  fileUrl String
-  title   String
-  userId  String
-  type    String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String  @id @unique @default(uuid())
+  fileUrl    String
+  title      String
+  userId     String
+  type       String
+  isFavorite Boolean @default(false)
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
