@@ -151,7 +151,7 @@ export default function SigUp() {
 
   return (
     <div>
-      <Card className="shadow-2xl">
+      <Card className="">
         <CardHeader>
           <CardTitle>Sign Up</CardTitle>
           <CardDescription>Create new account</CardDescription>
@@ -166,7 +166,7 @@ export default function SigUp() {
               <span>
                 {/* <BsGoogle className="h-5 w-5" /> */}
                 <Image
-                  src={"/google.png"}
+                  src={"/newGoogle.png"}
                   height={30}
                   width={30}
                   alt="google"
@@ -251,7 +251,7 @@ export default function SigUp() {
               href={"/signin"}
               className="text-[14px] font-bold hover:underline"
             >
-              Sign In
+              sign in
             </Link>
           </div>
         </CardFooter>

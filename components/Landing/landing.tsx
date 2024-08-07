@@ -22,12 +22,12 @@ const Landing = () => {
   return (
     <div className="flex h-screen flex-col items-center justify-center">
       <div className="flex sticky top-0 z-50 backdrop-blur-md w-full   items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
-        <div className=" items-center gap-2 flex">
+        <Link href={"/"} className=" items-center gap-2 flex">
           <Image src="/logo.png" alt="logo" width={60} height={60} />
           <h1 className="text-xl font-semibold hidden md:block ">
             SaveToDrive
           </h1>
-        </div>
+        </Link>
         <div className="flex items-center gap-5">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
