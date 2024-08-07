@@ -16,6 +16,10 @@ import {
 import { CiTrash } from "react-icons/ci";
 import { CiStar } from "react-icons/ci";
 import Link from "next/link";
+import axios from "axios";
+import { useState } from "react";
+import { useToast } from "../ui/use-toast";
+import { FaRegStarHalf } from "react-icons/fa";
 
 interface FileCardProps {
   file: File & {
@@ -24,6 +28,50 @@ interface FileCardProps {
 }
 
 const FileCard = ({ file }: FileCardProps) => {
+  const [isFavorite, setIsFavorite] = useState(file.isFavorite);
+  const { toast } = useToast();
+  const handleFavorite = async (fileId: string) => {
+    try {
+      const response = await axios.get(`/api/favorite?fileId=${fileId}`);
+      if (response.status === 200) {
+        setIsFavorite(true);
+        toast({
+          title: "Added to favorites",
+          description: "File added to favorites",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+      });
+    }
+  };
+
+  const handleFavoriteRemove = async (fileId: string) => {
+    try {
+      const response = await axios.post(
+        `/api/favorite`,
+        {
+          fileId,
+        },
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        setIsFavorite(false);
+        toast({
+          title: "Removed from favorites",
+          description: "File removed from favorites",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -38,37 +86,55 @@ const FileCard = ({ file }: FileCardProps) => {
               {file.title}
             </p>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <IoEllipsisVerticalSharp className="h-5 w-5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="md:w-[150px]">
-              <DropdownMenuItem>
-                <Link
-                  href={file.fileUrl as string}
-                  className="flex group items-center gap-5"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download={file.title}
-                >
-                  <CiFileOn className="h-6 w-6 group-hover:text-blue-500" />
-                  <p className="group-hover:text-blue-500">Download</p>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex group items-center gap-5 ">
-                  <CiStar className="h-6 w-6 group-hover:text-blue-500" />
-                  <p className="group-hover:text-blue-500">Favorite</p>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex group items-center gap-5 ">
-                  <CiTrash className="h-6 w-6 group-hover:text-rose-500" />
-                  <p className="group-hover:text-rose-500">Delete</p>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-2">
+            {isFavorite && (
+              <Image src={"/star.png"} height={28} width={28} alt="star" />
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <IoEllipsisVerticalSharp className="h-5 w-5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="md:w-[150px]">
+                <DropdownMenuItem>
+                  <Link
+                    href={file.fileUrl as string}
+                    className="flex group items-center gap-5"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download={file.title}
+                  >
+                    <CiFileOn className="h-6 w-6 group-hover:text-blue-500" />
+                    <p className="group-hover:text-blue-500">Download</p>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  {!isFavorite ? (
+                    <div
+                      onClick={() => handleFavorite(file.id as string)}
+                      className="flex group items-center gap-5"
+                    >
+                      <CiStar className="h-6 w-6  group-hover:text-blue-500" />
+                      <p className={`group-hover:text-blue-500`}>Favorite</p>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => handleFavoriteRemove(file.id as string)}
+                      className="flex group items-center gap-5"
+                    >
+                      <FaRegStarHalf className="h-6 w-6 font-thin  group-hover:text-blue-500" />
+                      <p className={`group-hover:text-blue-500`}>Remove</p>
+                    </div>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <div className="flex group items-center gap-5 ">
+                    <CiTrash className="h-6 w-6 group-hover:text-rose-500" />
+                    <p className="group-hover:text-rose-500">Delete</p>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </CardHeader>
       <CardContent>

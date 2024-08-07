@@ -12,5 +12,6 @@ export type File = {
     userId: String,
     title: String,
     fileUrl: String,
-    type: String
+    type: String,
+    isFavorite: Boolean
 }
