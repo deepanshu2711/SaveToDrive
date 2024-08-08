@@ -20,13 +20,14 @@ import { MoreVerticalIcon } from "lucide-react";
 
 interface DashBoardContentProps {
   user: User | null;
+  searchQuery: string;
 }
 
 type FileWithUser = File & {
   user: User;
 };
 
-const DashboardContent = ({ user }: DashBoardContentProps) => {
+const DashboardContent = ({ user, searchQuery }: DashBoardContentProps) => {
   const [mounted, setmounted] = useState(false);
   const [allFiles, setAllFiles] = useState<FileWithUser[]>([]);
   const [loading, setLoading] = useState(false);
@@ -37,6 +38,39 @@ const DashboardContent = ({ user }: DashBoardContentProps) => {
   useEffect(() => {
     setmounted(true);
   }, []);
+
+  useEffect(() => {
+    const handleSearchQuery = () => {
+      setFilteredFiles(allFiles);
+
+      if (!searchQuery || searchQuery === "") {
+        if (typeFilter === "all") {
+          setFilteredFiles(allFiles);
+        } else {
+          const filteredFiles = allFiles.filter((file) => {
+            return file.type === typeFilter;
+          });
+          setFilteredFiles(filteredFiles);
+        }
+      }
+      if (searchQuery && searchQuery !== "" && typeFilter === "all") {
+        const filteredFiles = allFiles.filter((file) => {
+          return file.title.toLowerCase().includes(searchQuery.toLowerCase());
+        });
+        setFilteredFiles(filteredFiles);
+      } else if (searchQuery && searchQuery !== "" && typeFilter !== "all") {
+        const filteredFiles = allFiles.filter((file) => {
+          return (
+            file.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            file.type === typeFilter
+          );
+        });
+        setFilteredFiles(filteredFiles);
+      }
+    };
+    handleSearchQuery();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, allFiles, typeFilter]);
 
   useEffect(() => {
     const fetchAllUserFiles = async () => {
@@ -83,10 +117,17 @@ const DashboardContent = ({ user }: DashBoardContentProps) => {
 
   const filterFilesBytype = (type: string) => {
     if (type === "all") {
-      setFilteredFiles(allFiles);
+      const filteredFiles = allFiles.filter((file) =>
+        file.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredFiles(filteredFiles);
       return;
     } else {
-      const filteredFiles = allFiles.filter((file) => file.type === type);
+      const filteredFiles = allFiles.filter(
+        (file) =>
+          file.type === type &&
+          file.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
       setFilteredFiles(filteredFiles);
     }
   };
