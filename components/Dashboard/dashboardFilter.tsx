@@ -14,11 +14,16 @@ import {
 interface DashboardFilterProps {
   selectedTab: string;
   setSelectedTab: (value: string) => void;
+
+  typeFilter: string;
+  setTypeFilter: (value: string) => void;
 }
 
 const DashboardFilter = ({
   selectedTab,
   setSelectedTab,
+  typeFilter,
+  setTypeFilter,
 }: DashboardFilterProps) => {
   // const [selectedTab, setSelectedTab] = useState("Grid");
   const [mounted, setMounted] = useState(false);
@@ -59,17 +64,16 @@ const DashboardFilter = ({
         </Tabs>
       </div>
       <div className="flex items-center gap-4">
-        <p className="text-[14px] font-semibold  hidden md:block">
-          Type Filter
-        </p>
-        <Select>
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="All" />
+            <SelectValue placeholder="Type Filter" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="personal">PDF</SelectItem>
-            <SelectItem value="dark">CSV</SelectItem>
-            <SelectItem value="system">IMAGE</SelectItem>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="image">IMAGE</SelectItem>
+            <SelectItem value="pdf">PDF</SelectItem>
+            <SelectItem value="csv">CSV</SelectItem>
+            <SelectItem value="doc">DOCX</SelectItem>
           </SelectContent>
         </Select>
       </div>

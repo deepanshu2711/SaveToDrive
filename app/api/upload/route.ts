@@ -25,6 +25,9 @@ export async function POST(req: NextRequest) {
                 title,
                 fileUrl,
                 type: newType
+            },
+            include: {
+                user: true
             }
         })
 

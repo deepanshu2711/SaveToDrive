@@ -30,8 +30,9 @@ const DashboardContent = ({ user }: DashBoardContentProps) => {
   const [mounted, setmounted] = useState(false);
   const [allFiles, setAllFiles] = useState<FileWithUser[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const [filteredFiles, setFilteredFiles] = useState<FileWithUser[]>([]);
   const [selectedTab, setSelectedTab] = useState("Grid");
+  const [typeFilter, setTypeFilter] = useState("all");
 
   useEffect(() => {
     setmounted(true);
@@ -56,6 +57,10 @@ const DashboardContent = ({ user }: DashBoardContentProps) => {
     fetchAllUserFiles();
   }, [user]);
 
+  useEffect(() => {
+    setFilteredFiles(allFiles);
+  }, [allFiles]);
+
   if (!user || !mounted || loading) {
     return (
       <div className="flex flex-col gap-10 mt-5">
@@ -76,19 +81,39 @@ const DashboardContent = ({ user }: DashBoardContentProps) => {
     setSelectedTab(currentTab);
   };
 
+  const filterFilesBytype = (type: string) => {
+    if (type === "all") {
+      setFilteredFiles(allFiles);
+      return;
+    } else {
+      const filteredFiles = allFiles.filter((file) => file.type === type);
+      setFilteredFiles(filteredFiles);
+    }
+  };
+
+  const setTypeFilterChange = (type: string) => {
+    setTypeFilter(type);
+    setFilteredFiles(allFiles);
+    filterFilesBytype(type);
+  };
+
   return (
     <div className="flex flex-col gap-10 mb-5">
       <DashboardFilter
         selectedTab={selectedTab}
         setSelectedTab={selectedTabChange}
+        setTypeFilter={setTypeFilterChange}
+        typeFilter={typeFilter}
       />
-      {allFiles && allFiles.length > 0 && selectedTab === "Grid" ? (
+      {filteredFiles && filteredFiles.length > 0 && selectedTab === "Grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-5">
-          {allFiles.map((file, idx) => (
+          {filteredFiles.map((file, idx) => (
             <FileCard key={idx} file={file} />
           ))}
         </div>
-      ) : allFiles && allFiles.length > 0 && selectedTab === "Table" ? (
+      ) : filteredFiles &&
+        filteredFiles.length > 0 &&
+        selectedTab === "Table" ? (
         <Table>
           <TableCaption>A list of your all files.</TableCaption>
           <TableHeader>
@@ -100,7 +125,7 @@ const DashboardContent = ({ user }: DashBoardContentProps) => {
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          {allFiles.map((file, idx) => (
+          {filteredFiles.map((file, idx) => (
             <TableBody key={idx}>
               <TableRow>
                 <TableCell className="font-medium">{file.title}</TableCell>
