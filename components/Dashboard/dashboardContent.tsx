@@ -21,13 +21,20 @@ import { MoreVerticalIcon } from "lucide-react";
 interface DashBoardContentProps {
   user: User | null;
   searchQuery: string;
+  favorite?: boolean;
+  trash?: boolean;
 }
 
 type FileWithUser = File & {
   user: User;
 };
 
-const DashboardContent = ({ user, searchQuery }: DashBoardContentProps) => {
+const DashboardContent = ({
+  user,
+  searchQuery,
+  favorite,
+  trash,
+}: DashBoardContentProps) => {
   const [mounted, setmounted] = useState(false);
   const [allFiles, setAllFiles] = useState<FileWithUser[]>([]);
   const [loading, setLoading] = useState(false);
@@ -38,6 +45,8 @@ const DashboardContent = ({ user, searchQuery }: DashBoardContentProps) => {
   useEffect(() => {
     setmounted(true);
   }, []);
+
+  console.log(favorite);
 
   useEffect(() => {
     const handleSearchQuery = () => {
@@ -77,7 +86,7 @@ const DashboardContent = ({ user, searchQuery }: DashBoardContentProps) => {
       setLoading(true);
       try {
         const responce = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/files?userId=${user?.id}`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/files?userId=${user?.id}&isFavorite=${favorite}&isDeleted=${trash}`
         );
         if (responce.status === 200) {
           setAllFiles(responce.data);

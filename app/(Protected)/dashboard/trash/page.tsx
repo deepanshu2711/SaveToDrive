@@ -1,7 +1,9 @@
+import TrashFiles from "@/components/TrashFiles/TrashFiles";
+
 const Trash = () => {
   return (
     <div>
-      <h1>Trash</h1>
+      <TrashFiles />
     </div>
   );
 };

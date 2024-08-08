@@ -1,26 +1,30 @@
 "use client";
-import { useAppSelector } from "@/redux/hook";
-import DashboardContent from "./dashboardContent";
-import DashboardHeader from "./dashboardHeader";
-import { User } from "@/types";
 import { useState } from "react";
+import DashboardHeader from "../Dashboard/dashboardHeader";
+import { useAppSelector } from "@/redux/hook";
+import { User } from "@/types";
+import DashboardContent from "../Dashboard/dashboardContent";
 
-const Dashboard = () => {
+const TrashFiles = () => {
   const currentUser: User = useAppSelector(
     (state: any) => state.user.currentUser
   );
   const [searchQuery, setSearchQuery] = useState("");
   return (
-    <div className="w-full px-5 md:px-10">
+    <div className="px-5 md:px-10">
       <DashboardHeader
-        title="Your Files"
+        title="Trash Files"
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         user={currentUser}
       />
-      <DashboardContent searchQuery={searchQuery} user={currentUser} />
+      <DashboardContent
+        searchQuery={searchQuery}
+        user={currentUser}
+        trash={true}
+      />
     </div>
   );
 };
 
-export default Dashboard;
+export default TrashFiles;

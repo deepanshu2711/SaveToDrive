@@ -21,12 +21,14 @@ import { useToast } from "../ui/use-toast";
 
 interface DashBoardHeaderProps {
   user: User | null;
+  title: string;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 }
 
 const DashboardHeader = ({
   user,
+  title: header,
   searchQuery,
   setSearchQuery,
 }: DashBoardHeaderProps) => {
@@ -116,7 +118,12 @@ const DashboardHeader = ({
   return (
     <div className="flex flex-col gap-5 pb-5 border-b md:border-0">
       <div className="flex md:hidden gap-5 items-center">
-        <Input type="text" placeholder="file name" />
+        <Input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          type="text"
+          placeholder="file name"
+        />
         <Button>
           <CiSearch className="h-6 w-6" />
           <p className="ml-2 hidden">Search</p>
@@ -124,7 +131,7 @@ const DashboardHeader = ({
       </div>
       <div className="flex items-center justify-between w-full">
         <p className="md:text-5xl hidden md:block text-3xl font-bold ">
-          Your Files
+          {header}
         </p>
         <div className="md:flex hidden gap-2 items-center">
           <Input

@@ -1,7 +1,9 @@
+import FavoriteFiles from "@/components/FavoriteFiles/FavoriteFiles";
+
 const Favorites = () => {
   return (
     <div>
-      <h1>Favorites</h1>
+      <FavoriteFiles />
     </div>
   );
 };
