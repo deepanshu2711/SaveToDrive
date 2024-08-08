@@ -11,8 +11,16 @@ import {
   SelectValue,
 } from "../ui/select";
 
-const DashboardFilter = () => {
-  const [selectedTab, setSelectedTab] = useState("Grid");
+interface DashboardFilterProps {
+  selectedTab: string;
+  setSelectedTab: (value: string) => void;
+}
+
+const DashboardFilter = ({
+  selectedTab,
+  setSelectedTab,
+}: DashboardFilterProps) => {
+  // const [selectedTab, setSelectedTab] = useState("Grid");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -24,14 +32,15 @@ const DashboardFilter = () => {
   const handleValueChange = () => {
     if (selectedTab === "Grid") {
       setSelectedTab("Table");
-    } else {
+    } else if (selectedTab === "Table") {
       setSelectedTab("Grid");
     }
   };
 
   return (
     <div className="flex items-center justify-between mt-4">
-      <div>
+      <p className="text-[22px] font-semibold md:hidden ">Your Files</p>
+      <div className="md:block hidden">
         <Tabs value={selectedTab} onValueChange={handleValueChange}>
           <TabsList>
             <TabsTrigger value="Grid">
