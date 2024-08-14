@@ -17,6 +17,7 @@ import {
 } from "../ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { MoreVerticalIcon } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 interface DashBoardContentProps {
   user: User | null;
@@ -41,6 +42,7 @@ const DashboardContent = ({
   const [filteredFiles, setFilteredFiles] = useState<FileWithUser[]>([]);
   const [selectedTab, setSelectedTab] = useState("Grid");
   const [typeFilter, setTypeFilter] = useState("all");
+  const { toast } = useToast();
 
   useEffect(() => {
     setmounted(true);
@@ -147,6 +149,68 @@ const DashboardContent = ({
     filterFilesBytype(type);
   };
 
+  const handleFileDelete = async (fileId: string) => {
+    try {
+      const response = await axios.delete(`/api/files?fileId=${fileId}`);
+      if (response.status === 200) {
+        const allFiles = filteredFiles.filter((file) => file.id !== fileId);
+        setAllFiles(allFiles);
+        setFilteredFiles(allFiles);
+        toast({
+          title: "File Trashed",
+          description: "File Trashed successfully",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+      });
+    }
+  };
+
+  const handleFileRestore = async (fileId: string) => {
+    try {
+      const response = await axios.post(`/api/files/restore`, { fileId });
+      if (response.status === 200) {
+        const allFiles = filteredFiles.filter((file) => file.id !== fileId);
+        setAllFiles(allFiles);
+        setFilteredFiles(allFiles);
+        toast({
+          title: response.data,
+          description: "File Restored successfully",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+      });
+    }
+  };
+
+  const handleFilePermaDelete = async (fileId: string) => {
+    try {
+      const reponce = await axios.delete(
+        `/api/files/permaDelete?fileId=${fileId}`
+      );
+      if (reponce.status === 200) {
+        const allFiles = filteredFiles.filter((file) => file.id !== fileId);
+        setAllFiles(allFiles);
+        setFilteredFiles(allFiles);
+        toast({
+          title: reponce.data,
+          description: "File deleted successfully",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col gap-10 mb-5">
       <DashboardFilter
@@ -158,7 +222,13 @@ const DashboardContent = ({
       {filteredFiles && filteredFiles.length > 0 && selectedTab === "Grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-5">
           {filteredFiles.map((file, idx) => (
-            <FileCard key={idx} file={file} />
+            <FileCard
+              handleFileDelete={handleFileDelete}
+              handleFileRestore={handleFileRestore}
+              handleFilePermaDelete={handleFilePermaDelete}
+              key={idx}
+              file={file}
+            />
           ))}
         </div>
       ) : filteredFiles &&

@@ -27,9 +27,17 @@ interface FileCardProps {
   file: File & {
     user: User;
   };
+  handleFileDelete: (fileId: string) => void;
+  handleFileRestore: (fileId: string) => void;
+  handleFilePermaDelete: (fileId: string) => void;
 }
 
-const FileCard = ({ file }: FileCardProps) => {
+const FileCard = ({
+  file,
+  handleFileDelete,
+  handleFileRestore,
+  handleFilePermaDelete,
+}: FileCardProps) => {
   const [isFavorite, setIsFavorite] = useState(file.isFavorite);
   const { toast } = useToast();
   const pathname = usePathname();
@@ -65,59 +73,6 @@ const FileCard = ({ file }: FileCardProps) => {
         toast({
           title: "Removed from favorites",
           description: "File removed from favorites",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Something went wrong",
-      });
-    }
-  };
-
-  const handleFileDelete = async (fileId: string) => {
-    try {
-      const response = await axios.delete(`/api/files?fileId=${fileId}`);
-      if (response.status === 200) {
-        toast({
-          title: "File Trashed",
-          description: "File Trashed successfully",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Something went wrong",
-      });
-    }
-  };
-
-  const handleFilePermaDelete = async (fileId: string) => {
-    try {
-      const reponce = await axios.delete(
-        `/api/files/permaDelete?fileId=${fileId}`
-      );
-      if (reponce.status === 200) {
-        toast({
-          title: reponce.data,
-          description: "File deleted successfully",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Something went wrong",
-      });
-    }
-  };
-
-  const handleFileRestore = async (fileId: string) => {
-    try {
-      const response = await axios.post(`/api/files/restore`, { fileId });
-      if (response.status === 200) {
-        toast({
-          title: response.data,
-          description: "File Restored successfully",
         });
       }
     } catch (error) {
