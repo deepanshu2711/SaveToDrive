@@ -20,6 +20,8 @@ import axios from "axios";
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
 import { FaRegStarHalf } from "react-icons/fa";
+import { usePathname } from "next/navigation";
+import { TbRestore } from "react-icons/tb";
 
 interface FileCardProps {
   file: File & {
@@ -30,6 +32,7 @@ interface FileCardProps {
 const FileCard = ({ file }: FileCardProps) => {
   const [isFavorite, setIsFavorite] = useState(file.isFavorite);
   const { toast } = useToast();
+  const pathname = usePathname();
   const handleFavorite = async (fileId: string) => {
     try {
       const response = await axios.get(`/api/favorite?fileId=${fileId}`);
@@ -77,8 +80,44 @@ const FileCard = ({ file }: FileCardProps) => {
       const response = await axios.delete(`/api/files?fileId=${fileId}`);
       if (response.status === 200) {
         toast({
-          title: "File deleted",
+          title: "File Trashed",
+          description: "File Trashed successfully",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+      });
+    }
+  };
+
+  const handleFilePermaDelete = async (fileId: string) => {
+    try {
+      const reponce = await axios.delete(
+        `/api/files/permaDelete?fileId=${fileId}`
+      );
+      if (reponce.status === 200) {
+        toast({
+          title: reponce.data,
           description: "File deleted successfully",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+      });
+    }
+  };
+
+  const handleFileRestore = async (fileId: string) => {
+    try {
+      const response = await axios.post(`/api/files/restore`, { fileId });
+      if (response.status === 200) {
+        toast({
+          title: response.data,
+          description: "File Restored successfully",
         });
       }
     } catch (error) {
@@ -110,46 +149,75 @@ const FileCard = ({ file }: FileCardProps) => {
                 <IoEllipsisVerticalSharp className="h-5 w-5" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="md:w-[150px]">
-                <DropdownMenuItem>
-                  <Link
-                    href={file.fileUrl as string}
-                    className="flex group items-center gap-5"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download={file.title}
-                  >
-                    <CiFileOn className="h-6 w-6 group-hover:text-blue-500" />
-                    <p className="group-hover:text-blue-500">Download</p>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  {!isFavorite ? (
-                    <div
-                      onClick={() => handleFavorite(file.id as string)}
-                      className="flex group items-center gap-5"
-                    >
-                      <CiStar className="h-6 w-6  group-hover:text-blue-500" />
-                      <p className={`group-hover:text-blue-500`}>Favorite</p>
-                    </div>
-                  ) : (
-                    <div
-                      onClick={() => handleFavoriteRemove(file.id as string)}
-                      className="flex group items-center gap-5"
-                    >
-                      <FaRegStarHalf className="h-6 w-6 font-thin  group-hover:text-blue-500" />
-                      <p className={`group-hover:text-blue-500`}>Remove</p>
-                    </div>
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div
-                    onClick={() => handleFileDelete(file.id as string)}
-                    className="flex group items-center gap-5 "
-                  >
-                    <CiTrash className="h-6 w-6 group-hover:text-rose-500" />
-                    <p className="group-hover:text-rose-500">Delete</p>
+                {pathname?.includes("trash") ? (
+                  <div>
+                    <DropdownMenuItem>
+                      <div
+                        onClick={() => handleFileRestore(file.id as string)}
+                        className="flex group items-center gap-5"
+                      >
+                        <TbRestore className="h-6 w-6 group-hover:text-emerald-500" />
+                        <p className="group-hover:text-emerald-500">Restore</p>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <div
+                        onClick={() => handleFilePermaDelete(file.id as string)}
+                        className="flex group items-center gap-5 "
+                      >
+                        <CiTrash className="h-6 w-6 group-hover:text-rose-500" />
+                        <p className="group-hover:text-rose-500">Delete</p>
+                      </div>
+                    </DropdownMenuItem>
                   </div>
-                </DropdownMenuItem>
+                ) : (
+                  <div>
+                    <DropdownMenuItem>
+                      <Link
+                        href={file.fileUrl as string}
+                        className="flex group items-center gap-5"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download={file.title}
+                      >
+                        <CiFileOn className="h-6 w-6 group-hover:text-blue-500" />
+                        <p className="group-hover:text-blue-500">Download</p>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      {!isFavorite ? (
+                        <div
+                          onClick={() => handleFavorite(file.id as string)}
+                          className="flex group items-center gap-5"
+                        >
+                          <CiStar className="h-6 w-6  group-hover:text-blue-500" />
+                          <p className={`group-hover:text-blue-500`}>
+                            Favorite
+                          </p>
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() =>
+                            handleFavoriteRemove(file.id as string)
+                          }
+                          className="flex group items-center gap-5"
+                        >
+                          <FaRegStarHalf className="h-6 w-6 font-thin  group-hover:text-blue-500" />
+                          <p className={`group-hover:text-blue-500`}>Remove</p>
+                        </div>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <div
+                        onClick={() => handleFileDelete(file.id as string)}
+                        className="flex group items-center gap-5 "
+                      >
+                        <CiTrash className="h-6 w-6 group-hover:text-rose-500" />
+                        <p className="group-hover:text-rose-500">Trash</p>
+                      </div>
+                    </DropdownMenuItem>
+                  </div>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
