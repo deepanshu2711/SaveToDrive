@@ -45,13 +45,13 @@ export default function SigIn() {
         );
 
         if (responce.status === 201) {
+          router.push("/dashboard");
           toast({
             title: "Sign in successful",
             description: "Welcome back! to SaveToDrive",
             variant: "success",
           });
           dispatch(setCurrentUser(responce.data));
-          router.push("/dashboard");
         } else if (responce.status === 200) {
           toast({
             title: responce.data,
@@ -84,6 +84,7 @@ export default function SigIn() {
       );
 
       if (responce.status === 201) {
+        router.push("/dashboard");
         toast({
           title: "Sign in successful",
           description: "Welcome back! to SaveToDrive",
@@ -91,8 +92,6 @@ export default function SigIn() {
         });
 
         dispatch(setCurrentUser(responce.data));
-
-        router.push("/dashboard");
       }
 
       if (responce.status === 200)

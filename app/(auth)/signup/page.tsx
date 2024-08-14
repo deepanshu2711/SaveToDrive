@@ -52,13 +52,13 @@ export default function SigUp() {
         );
 
         if (responce.status === 201) {
+          router.push("/dashboard");
           toast({
             title: "Sign in successful",
             description: "Welcome back! to SaveToDrive",
             variant: "success",
           });
           dispatch(setCurrentUser(responce.data));
-          router.push("/dashboard");
         } else if (responce.status === 200) {
           toast({
             title: responce.data,
@@ -125,13 +125,13 @@ export default function SigUp() {
       );
 
       if (responce.status === 201) {
+        router.push("/dashboard");
         toast({
           title: "Account created",
           description: "We've created your account for you.",
           variant: "success",
         });
         dispatch(setCurrentUser(responce.data));
-        router.push("/dashboard");
       }
 
       if (responce.status === 200)
