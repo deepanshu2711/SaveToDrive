@@ -19,3 +19,8 @@ export type File = {
     updatedAt: Date
 
 }
+
+
+export type FileWithUser = File & {
+    user: User;
+  };

@@ -1,5 +1,5 @@
 "use client";
-import { File, User } from "@/types";
+import { File, FileWithUser, User } from "@/types";
 import DashboardFilter from "./dashboardFilter";
 import FileCard from "./FileCard";
 import { Skeleton } from "../ui/skeleton";
@@ -24,21 +24,22 @@ interface DashBoardContentProps {
   searchQuery: string;
   favorite?: boolean;
   trash?: boolean;
+  allFiles: FileWithUser[];
+  setAllFiles: (allFiles: FileWithUser[]) => void;
+  loading: boolean;
 }
-
-type FileWithUser = File & {
-  user: User;
-};
 
 const DashboardContent = ({
   user,
   searchQuery,
   favorite,
   trash,
+  allFiles,
+  setAllFiles,
+  loading,
 }: DashBoardContentProps) => {
   const [mounted, setmounted] = useState(false);
-  const [allFiles, setAllFiles] = useState<FileWithUser[]>([]);
-  const [loading, setLoading] = useState(false);
+
   const [filteredFiles, setFilteredFiles] = useState<FileWithUser[]>([]);
   const [selectedTab, setSelectedTab] = useState("Grid");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -82,25 +83,6 @@ const DashboardContent = ({
     handleSearchQuery();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, allFiles, typeFilter]);
-
-  useEffect(() => {
-    const fetchAllUserFiles = async () => {
-      setLoading(true);
-      try {
-        const responce = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/files?userId=${user?.id}&isFavorite=${favorite}&isDeleted=${trash}`
-        );
-        if (responce.status === 200) {
-          setAllFiles(responce.data);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
-      }
-    };
-    fetchAllUserFiles();
-  }, [user]);
 
   useEffect(() => {
     setFilteredFiles(allFiles);

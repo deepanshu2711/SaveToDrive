@@ -24,20 +24,31 @@ interface DashBoardHeaderProps {
   title: string;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  filename: string;
+  setFile: (file: File | null) => void;
+  uploading: boolean;
+  setTitle: (filename: string) => void;
+  handleUpload: () => void;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  favorite: boolean;
+  trash: boolean;
 }
 
 const DashboardHeader = ({
   user,
-  title: header,
   searchQuery,
   setSearchQuery,
+  handleUpload,
+  filename,
+  setFile,
+  uploading,
+  setTitle,
+  isOpen,
+  setIsOpen,
+  favorite,
+  trash,
 }: DashBoardHeaderProps) => {
-  const { toast } = useToast();
-  const [title, setTitle] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -59,50 +70,6 @@ const DashboardHeader = ({
     } else {
       setFile(file as File);
     }
-  };
-
-  const handleUpload = async () => {
-    setUploading(true);
-    await handleImageUpload(file as File)
-      .then(async (res) => {
-        if (res.success) {
-          try {
-            const responce = await axios.post(
-              `${process.env.NEXT_PUBLIC_BASE_URL}/api/upload`,
-              {
-                userId: user?.id,
-                title: title,
-                fileUrl: res.downloadUrl,
-                type: file?.type.split("/")[1],
-              },
-              { withCredentials: true }
-            );
-
-            if (responce.status === 201) {
-              toast({
-                title: "File uploaded successfully",
-                variant: "success",
-              });
-            } else if (responce.status === 200) {
-              toast({
-                title: responce.data,
-                variant: "default",
-              });
-            }
-          } catch (error) {
-            toast({
-              title: "Something went wrong",
-              variant: "destructive",
-            });
-          }
-        }
-      })
-      .finally(() => {
-        setTitle("");
-        setFile(null);
-        setIsOpen(false);
-        setUploading(false);
-      });
   };
 
   if (!user || !mounted) {
@@ -131,7 +98,7 @@ const DashboardHeader = ({
       </div>
       <div className="flex items-center justify-between w-full">
         <p className="md:text-5xl hidden md:block text-3xl font-bold ">
-          {header}
+          {favorite ? "Favorite" : trash ? "Trash" : "Dashboard"}
         </p>
         <div className="md:flex hidden gap-2 items-center">
           <Input
@@ -146,13 +113,15 @@ const DashboardHeader = ({
           </Button>
         </div>
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
-          <div>
-            <DialogTrigger onClick={() => setIsOpen(true)}>
-              <div className="w-full  bg-gray-950 dark:bg-white hover:dark:bg-gray-100 dark:text-black text-white px-5 py-2 rounded-md hover:bg-gray-800">
-                Upload file
-              </div>
-            </DialogTrigger>
-          </div>
+          {favorite === false && trash === false && (
+            <div>
+              <DialogTrigger onClick={() => setIsOpen(true)}>
+                <div className="w-full  bg-gray-950 dark:bg-white hover:dark:bg-gray-100 dark:text-black text-white px-5 py-2 rounded-md hover:bg-gray-800">
+                  Upload file
+                </div>
+              </DialogTrigger>
+            </div>
+          )}
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Upload Your File Here</DialogTitle>
@@ -162,7 +131,7 @@ const DashboardHeader = ({
             </DialogHeader>
             <div className="flex flex-col gap-5">
               <Input
-                value={title}
+                value={filename}
                 onChange={(e) => setTitle(e.target.value)}
                 type="text"
                 placeholder="Title"

@@ -1,9 +1,10 @@
 import Dashboard from "@/components/Dashboard/dashboard";
+import { usePathname } from "next/navigation";
 
 const DashBoard = () => {
   return (
     <div className="w-full">
-      <Dashboard />
+      <Dashboard favorite={false} trash={false} />
     </div>
   );
 };
