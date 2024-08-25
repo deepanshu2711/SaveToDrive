@@ -17,8 +17,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import axios from "axios";
@@ -26,9 +24,23 @@ import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { CiFileOn, CiStar, CiTrash } from "react-icons/ci";
+
 export const Header = () => {
   const [mounted, setMounted] = useState(false);
   const { setTheme } = useTheme();
+  const params = usePathname();
+  const [open, setOpen] = useState(false);
 
   const currentUser: User = useAppSelector(
     (state: any) => state.user.currentUser
@@ -54,7 +66,57 @@ export const Header = () => {
 
   return (
     <div className="flex sticky top-0 z-50 backdrop-blur-md   items-center justify-between md:px-10 px-5 md:py-4 py-2 shadow-md">
-      <IoMdMenu className="md:hidden h-8 w-8" />
+      <div className="md:hidden">
+        <Sheet>
+          <SheetTrigger>
+            <IoMdMenu className="md:hidden h-8 w-8" />
+          </SheetTrigger>
+          <SheetContent className="md:hidden" side={"left"}>
+            <SheetHeader>
+              <SheetTitle></SheetTitle>
+              <SheetDescription>
+                <div className="flex flex-col">
+                  <div className="flex flex-col gap-5">
+                    <Link
+                      href={"/dashboard"}
+                      className={`flex items-center group gap-2 cursor-pointer hover:text-blue-500 ${
+                        params === "/dashboard" ? "text-blue-500" : ""
+                      }`}
+                    >
+                      <CiFileOn className="h-8 w-8 " />
+                      <p className="text-[14px] font-semibold  group-hover:text-blue-500">
+                        All Files
+                      </p>
+                    </Link>
+                    <Link
+                      href={"/dashboard/favorites"}
+                      className={`flex items-center gap-2 group hover:text-blue-500 cursor-pointer ${
+                        params === "/dashboard/favorites" ? "text-blue-500" : ""
+                      }`}
+                    >
+                      <CiStar className="h-8 w-8 " />
+                      <p className="text-[14px] font-semibold  group-hover:text-blue-500">
+                        Favorites
+                      </p>
+                    </Link>
+                    <Link
+                      href={"/dashboard/trash"}
+                      className={`flex items-center gap-2 group hover:text-blue-500 cursor-pointer ${
+                        params === "/dashboard/trash" ? "text-blue-500" : ""
+                      }`}
+                    >
+                      <CiTrash className="h-8 w-8 " />
+                      <p className="text-[14px] font-semibold  group-hover:text-blue-500">
+                        Trash
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      </div>
       <div className=" items-center gap-2 flex">
         <Image src="/logo.png" alt="logo" width={60} height={60} />
         <h1 className="text-xl font-semibold ">SaveToDrive</h1>
